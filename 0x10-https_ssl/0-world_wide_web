@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# A script that prints the details of a domain and subdomain
+
+#awk -v var="$dom" 'NR==13 {print var " "$1 " " "in"  " " $NF}' file.txt
+#dig $2.$1
+
+sub_dom() {
+	sub="$2"
+	dom="$1"
+	dig "$sub"."$dom" | grep -A1 'ANSWER SECTION:' | tail -1 |awk -v var="$sub" '{print "The subdomain " var " is a " $4 " record and points to " $NF}'
+}
+
+if [ $#	-eq 2 ]; then
+	sub_dom "$1" "$2"
+elif [ $# -eq 1 ]; then
+	sub_dom "$1" "www"
+	sub_dom "$1" "lb-01"
+	sub_dom "$1" "web-01"
+	sub_dom "$1" "web-02"
+fi
